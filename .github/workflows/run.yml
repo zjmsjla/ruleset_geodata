@@ -218,8 +218,8 @@ jobs:
 
       - name: Download and unzip `sing-box` core(compatible)
         run: |
-          wget https://github.com/DustinWin/clash_singbox-tools/releases/download/sing-box/sing-box-release-linux-amd64v3.tar.gz -O - | tar -zxf - -C ./tools/
-          mv -f ./tools/CrashCore ./tools/sing-box
+          wget https://github.com/SagerNet/sing-box/releases/download/v1.9.6/sing-box-1.9.6-linux-amd64v3.tar.gz -O - | tar -zxf - -C ./tools/
+          mv -f ./tools/sing-box-1.9.6-linux-amd64v3/sing-box ./tools/sing-box
 
       - name: Generate `sing-box` rule_set(compatible)
         run: |
