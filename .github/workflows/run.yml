@@ -116,7 +116,7 @@ jobs:
 
       - name: Generate `clash` rule-set
         run: |
-          mkdir -p ./clash-ruleset/ ./sing-box-ruleset/ ./sing-box-ruleset-compatible/
+          mkdir -p ./clash-ruleset/
           domains=(private ads microsoft-cn apple-cn google-cn games-cn ai netflix disney max primevideo appletv youtube tiktok bilibili proxy cn)
           archs=(applications networktest)
           ips=(netflixip telegramip privateip cnip)
@@ -204,29 +204,31 @@ jobs:
           done
           rm -rf ./mihomo* ./domains/ ./ips/
 
+      - name: Download and unzip `sing-box` core (compatible)
+        run: |
+          wget https://github.com/SagerNet/sing-box/releases/download/v1.9.7/sing-box-1.9.7-linux-amd64.tar.gz -O - | tar -zxf - -C ./tools/
+          mv -f ./tools/sing-box-1.9.7-linux-amd64/sing-box ./tools/sing-box
+
+      - name: Generate `sing-box` rule_set (compatible)
+        run: |
+          mkdir -p ./sing-box-ruleset-compatible/
+          cd ./tools/
+          chmod +x ./convert.sh && ./convert.sh
+          mv -f ./*.json ./*.srs ../sing-box-ruleset-compatible/
+
       - name: Download and unzip `sing-box` core
         run: |
-          wget https://github.com/DustinWin/clash_singbox-tools/releases/download/sing-box/sing-box-dev-linux-amd64v3.tar.gz -O - | tar -zxf - -C ./tools/
+          wget https://github.com/DustinWin/clash_singbox-tools/releases/download/sing-box/sing-box-release-linux-amd64.tar.gz -O - | tar -zxf - -C ./tools/
           mv -f ./tools/CrashCore ./tools/sing-box
 
       - name: Generate `sing-box` rule_set
         run: |
+          mkdir -p ./sing-box-ruleset/
           cd ./tools/
+          sed -i 's/"version": 1/"version": 2/' ./convert.sh
           chmod +x ./convert.sh && ./convert.sh
-          rm -rf ./sing-box*
-          mv -f ./*.json ./*.srs ../sing-box-ruleset/
-
-      - name: Download and unzip `sing-box` core(compatible)
-        run: |
-          wget https://github.com/SagerNet/sing-box/releases/download/v1.9.6/sing-box-1.9.6-linux-amd64v3.tar.gz -O - | tar -zxf - -C ./tools/
-          mv -f ./tools/sing-box-1.9.6-linux-amd64v3/sing-box ./tools/sing-box
-
-      - name: Generate `sing-box` rule_set(compatible)
-        run: |
-          cd ./tools/
-          chmod +x ./convert_compatible.sh && ./convert_compatible.sh
           rm -rf ./sing-box* ./rules*
-          mv -f ./*.json ./*.srs ../sing-box-ruleset-compatible/
+          mv -f ./*.json ./*.srs ../sing-box-ruleset/
 
       - name: Release and upload `clash` assets
         uses: svenstaro/upload-release-action@v2
